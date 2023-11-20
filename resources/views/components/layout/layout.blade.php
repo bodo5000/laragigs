@@ -29,14 +29,35 @@
     <nav class="flex justify-between items-center mb-4">
         <a href="/"><img class="w-24" src="{{ asset('images/logo.png') }}" alt="" class="logo" /></a>
         <ul class="flex space-x-6 mr-6 text-lg">
-            <li>
-                <a href="register.html" class="hover:text-laravel"><i class="fa-solid fa-user-plus"></i> Register</a>
-            </li>
-            <li>
-                <a href="login.html" class="hover:text-laravel"><i class="fa-solid fa-arrow-right-to-bracket"></i>
-                    Login</a>
-            </li>
-        </ul>
+            @auth
+                <li>
+                    <span class="font-bold uppercase">Welcome {{ Auth::user()->name }}</span>
+                </li>
+                <li>
+                    <a href="/listings/manage/{{ Auth::user()->id }}" class="hover:text-laravel"><i
+                            class="fa-solid fa-gear"></i>
+                        Manage Gigs</a>
+                </li>
+                <li>
+                    <form class="inline" action="/logout" method="POST">
+                        @csrf
+                        <button type="submit" class="text-laravel">
+                            <i class="fa-solid fa-door-closed"></i>
+                            logOut
+                        </button>
+                    </form>
+                </li>
+            @else
+                <li>
+                    <a href="/register" class="hover:text-laravel"><i class="fa-solid fa-user-plus"></i> Register</a>
+                </li>
+                <li>
+                    <a href="/login" class="hover:text-laravel"><i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        Login</a>
+                </li>
+
+            </ul>
+        @endauth
     </nav>
     <main>
         {{ $slot }}
