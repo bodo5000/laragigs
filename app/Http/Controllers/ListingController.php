@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Listings\ListingRequest;
 use App\Models\Listing;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
+use App\Repositories\Listings\ListingRepositoryInterface;
+
+
 
 class ListingController extends Controller
 {
+
+    public function __construct(private ListingRepositoryInterface $listingRepository)
+    {
+        $this->listingRepository = $listingRepository;
+    }
+
     public function index()
     {
         return view(
             'listings.index',
             [
-                'listings' => Listing::latest()
-                    ->filter(request(['tag', 'search']))
-                    ->paginate(5)
+                'listings' => $this->listingRepository->getDisc_Paginating_Filtering(5, ['tag', 'search'])
             ]
         );
     }
@@ -37,32 +41,13 @@ class ListingController extends Controller
         return view('listings.create');
     }
 
-    public function store(Request $request)
+    public function store(ListingRequest $request)
     {
 
-        $form_data = $request->validate(
-            [
-                'title' => 'required',
-                'company' => ['required', Rule::unique('listings', 'company')],
-                'location' => 'required',
-                'website' => 'required',
-                'email' => ['required', 'email'],
-                'tags' => 'required',
-                'description' => 'required',
-            ]
-        );
-
-        $form_data['user_id'] = auth()->id();
-
-        if ($request->hasFile('logo')) {
-            $form_data['logo'] = $request->file('logo')->store('logos', 'public');
-        }
-
-        Listing::create($form_data);
+        $this->listingRepository->createListing($request);
 
         return redirect('/')->with('message', 'Listing has been created');
     }
-
 
     public function edit(Listing $listing)
     {
@@ -70,40 +55,16 @@ class ListingController extends Controller
         return view('listings.edit', ['listing' => $listing]);
     }
 
-    public function update(Request $request, Listing $listing)
+    public function update(ListingRequest $request, Listing $listing)
     {
-
-        $form_data = $request->validate(
-            [
-                'id' => 'required',
-                'title' => 'required',
-                'company' => ['required', Rule::unique('listings', 'company')->ignore($listing->id, 'id')],
-                'location' => 'required',
-                'website' => 'required',
-                'email' => ['required', 'email'],
-                'tags' => 'required',
-                'description' => 'required'
-            ]
-        );
-
-        if ($request->hasFile('logo')) {
-
-            Storage::disk('public')->delete($listing->logo);
-            $form_data['logo'] = $request->file('logo')->store('logos', 'public');
-        }
-
-        $listing->update($form_data);
-
+        $this->listingRepository->updateListing($request, $listing);
         return redirect("/listings/{$listing->id}")->with('message', 'Listing has been updated');
     }
 
     public function destroy(Listing $listing)
     {
-        if ($listing->logo) {
-            Storage::disk('public')->delete($listing->logo);
-        }
 
-        $listing->destroy($listing->id);
+        $this->listingRepository->destroyListing($listing);
 
         return redirect('/')->with('message', 'Listing Deleted');
     }

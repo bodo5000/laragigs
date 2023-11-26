@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Users\AuthenticateRequest;
+use App\Http\Requests\Users\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -14,15 +15,9 @@ class UserController extends Controller
         return view('users.register');
     }
 
-    public function store(Request $request)
+    public function store(RegisterRequest $request)
     {
-        $form_data = $request->validate(
-            [
-                'name' => 'required|min:3',
-                'email' => ['required', Rule::unique('users', 'email'), 'email'],
-                'password' => ['required', 'confirmed', 'min:6'],
-            ]
-        );
+        $form_data = $request->all();
 
         $form_data['password'] = bcrypt($form_data['password']);
 
@@ -49,14 +44,9 @@ class UserController extends Controller
         return view('users.login');
     }
 
-    public function authenticate(Request $request)
+    public function authenticate(AuthenticateRequest $request)
     {
-        $form_data = $request->validate(
-            [
-                'email' => ['required', 'email'],
-                'password' => 'required',
-            ]
-        );
+        $form_data = $request->except(['_token']);
 
         if (!Auth::attempt($form_data)) {
             return back()->withErrors(['email' => 'invalid Credentials'])->onlyInput('email');
