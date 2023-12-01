@@ -36,20 +36,37 @@
                 @enderror
             </div>
 
-
-
             <div class="mb-6">
                 <button type="submit" class="bg-laravel text-white rounded py-2 px-4 hover:bg-black">
                     Sign In
                 </button>
             </div>
 
-            <div class="mt-8">
+            <div class="mb-6">
+                <a href="{{ route('google_auth') }}"
+                    class="bg-laravel text-white rounded py-2 px-4 hover:bg-black cursor-pointer flex items-center">
+                    <div class="mr-2">
+                        <img src="{{ asset('images/google.png') }}" alt="google_image" width="20px" height="20px"
+                            class="rounded-xl">
+                    </div>
+                    Sign In With Google
+                </a>
+            </div>
+
+            <div class="mt-6">
+                <p>
+                    forget your
+                    <a href="{{ route('start_forgetPassword') }}" class="text-laravel">password?</a>
+                </p>
+            </div>
+
+            <div class="mt-6">
                 <p>
                     don't have an account?
                     <a href="/register" class="text-laravel">register</a>
                 </p>
             </div>
+
         </form>
     </x-card>
 </x-layout.layout>

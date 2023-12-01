@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\Listing;
-use App\Repositories\Listings\ListingRepository;
-use App\Repositories\Listings\ListingRepositoryInterface;
+use App\Models\Job;
+use App\Repositories\Jobs\JobRepository;
+use App\Repositories\Jobs\JobRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -22,8 +22,8 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->bind(ListingRepositoryInterface::class, function () {
-            return new ListingRepository(new Listing());
+        $this->app->bind(JobRepositoryInterface::class, function () {
+            return new JobRepository(new Job());
         });
     }
 }

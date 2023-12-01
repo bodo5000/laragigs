@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Users;
+namespace App\Http\Requests\Job;
+
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class RegisterRequest extends FormRequest
+class JobRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +24,13 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min:3',
-            'email' => ['required', Rule::unique('users', 'email'), 'email'],
-            'password' => ['required', 'confirmed', 'min:6'],
+            'title' => 'required',
+            'company' => ['required', Rule::unique('listings', 'company')->ignore($this->listing->id ?? '', 'id')],
+            'location' => 'required',
+            'website' => 'required',
+            'email' => ['required', 'email'],
+            'tags' => 'required',
+            'description' => 'required'
         ];
     }
 }

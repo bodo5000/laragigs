@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Repositories\Listings;
+namespace App\Repositories\Jobs;
 
-use App\Http\Requests\Listings\ListingRequest;
-use App\Models\Listing;
+use App\Http\Requests\Job\JobRequest;
+use App\Models\Job;
 use App\Repositories\BaseRepository;
-use Illuminate\Support\Facades\Storage;
 
-class ListingRepository extends BaseRepository implements ListingRepositoryInterface
+
+class JobRepository extends BaseRepository implements JobRepositoryInterface
 {
 
-    public function createListing(ListingRequest $request)
+    public function createJob(JobRequest $request)
     {
         $form_data = $request->all();
         $form_data['user_id'] = auth()->id();
@@ -22,8 +22,9 @@ class ListingRepository extends BaseRepository implements ListingRepositoryInter
         return $this->create($form_data);
     }
 
-    public function updateListing(ListingRequest $request, Listing $listing)
+    public function updateJob(JobRequest $request, Job $listing)
     {
+
         $form_data = $request->all();
 
         if ($this->requestFileExists('logo')) {
@@ -35,10 +36,10 @@ class ListingRepository extends BaseRepository implements ListingRepositoryInter
         return $this->update($listing, $form_data);
     }
 
-    public function destroyListing(Listing $listing)
+    public function destroyJob(Job $listing)
     {
         if ($listing->logo) {
-            Storage::disk('public')->delete($listing->logo);
+            $this->deleteImage($listing->logo);
         }
 
         return $this->destroy($listing);

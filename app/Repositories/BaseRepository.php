@@ -18,22 +18,22 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->all();
     }
 
-    public function getAllDisc()
+    public function getAllDesc()
     {
         return  $this->model->latest()->get();
     }
 
-    public function getDisc_Filtering(array $filters)
+    public function getDesc_Filtering(array $filters)
     {
         return $this->model->latest()->filter(request($filters))->get();
     }
 
-    public function getDisc_Paginating(int $paginate)
+    public function getDesc_Paginating(int $paginate)
     {
         return $this->model->latest()->paginate($paginate);
     }
 
-    public function getDisc_Paginating_Filtering(int $paginate, array $filters)
+    public function getDesc_Paginating_Filtering(int $paginate, array $filters)
     {
         return $this->model->latest()->filter(request($filters))->paginate($paginate);
     }
@@ -53,7 +53,6 @@ class BaseRepository implements BaseRepositoryInterface
         return $model->update($formData);
     }
 
-
     public function destroy($model)
     {
         return $model->destroy($model->id);
@@ -72,6 +71,6 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function deleteImage($model)
     {
-        return Storage::disk('public')->delete($model);
+        return Storage::disk('public')->delete($model ?? '');
     }
 }

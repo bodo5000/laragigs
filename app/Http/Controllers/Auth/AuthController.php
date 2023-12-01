@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Requests\Users\AuthenticateRequest;
-use App\Http\Requests\Users\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\AuthenticateRequest;
 
-class UserController extends Controller
+class AuthController extends Controller
 {
     public function create()
     {
-        return view('users.register');
+        return view('auth.register');
     }
 
     public function store(RegisterRequest $request)
@@ -41,7 +42,7 @@ class UserController extends Controller
 
     public function login()
     {
-        return view('users.login');
+        return view('auth.login');
     }
 
     public function authenticate(AuthenticateRequest $request)

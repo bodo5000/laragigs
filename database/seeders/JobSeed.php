@@ -2,18 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\Listing;
+use App\Models\Job;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ListingSeed extends Seeder
+class JobSeed extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Listing::create(
+        Job::create(
             [
                 'title' => 'laravel jon Developer',
                 'tags' => 'laravel, php',
@@ -29,7 +29,7 @@ class ListingSeed extends Seeder
             ]
         );
 
-        // Listing::create(
+        // Job::create(
         //     [
         //         'title' => 'nodeJs senior Developer',
         //         'tags' => 'Node, js',

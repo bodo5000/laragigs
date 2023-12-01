@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Listing extends Model
+class Job extends Model
 {
     use HasFactory;
 
@@ -15,9 +15,13 @@ class Listing extends Model
         'location',
         'website',
         'email',
-        'tags', 'description', 'logo',
+        'tags',
+        'description',
+        'logo',
         'user_id'
     ];
+
+    protected $table = 'listings';
 
     public function scopeFilter($query, array $filters)
     {

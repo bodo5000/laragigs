@@ -6,7 +6,7 @@
             <x-listing-card :listing="$listing" />
         @empty
             <p>
-                No Listings Found
+                No Jobs Found
             </p>
         @endforelse
     </div>

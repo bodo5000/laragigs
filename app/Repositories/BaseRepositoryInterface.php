@@ -3,18 +3,17 @@
 namespace App\Repositories;
 
 
-
 interface BaseRepositoryInterface
 {
     public function getAll();
 
-    public function getAllDisc();
+    public function getAllDesc();
 
-    public function getDisc_Filtering(array $filters);
+    public function getDesc_Filtering(array $filters);
 
-    public function getDisc_Paginating(int $paginate);
+    public function getDesc_Paginating(int $paginate);
 
-    public function getDisc_Paginating_Filtering(int $paginate, array $filters);
+    public function getDesc_Paginating_Filtering(int $paginate, array $filters);
 
     public function find($id);
 
