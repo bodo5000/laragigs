@@ -26,7 +26,7 @@ class ForgetPasswordController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-            ? back()->with(['success' => __($status)])
+            ? back()->with(['message' => __($status)])
             : back()->withErrors(['email' => __($status)]);
     }
 
@@ -56,7 +56,7 @@ class ForgetPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('success', __($status))
+            ? redirect()->route('login')->with('message', __($status))
             : back()->withErrors(['email' => [__($status)]]);
     }
 }
