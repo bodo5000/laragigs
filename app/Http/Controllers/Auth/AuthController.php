@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\AuthenticateRequest;
+use App\Repositories\Auth\Interfaces\AuthInterface;
 
 class AuthController extends Controller
 {
+
+    public function __construct(private AuthInterface $authRepository)
+    {
+        $this->authRepository = $authRepository;
+    }
+
     public function create()
     {
         return view('auth.register');
@@ -18,13 +23,8 @@ class AuthController extends Controller
 
     public function store(RegisterRequest $request)
     {
-        $form_data = $request->all();
 
-        $form_data['password'] = bcrypt($form_data['password']);
-
-        $user =  User::create($form_data);
-
-        Auth::login($user);
+        $this->authRepository->userRegister($request);
 
         return redirect('/')->with('message', 'user has been created and loggedIn');
     }
@@ -32,9 +32,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+
+        $this->authRepository->userLogout($request);
 
         return redirect('/')->with('message', 'user has been logout');
     }
@@ -47,9 +46,8 @@ class AuthController extends Controller
 
     public function authenticate(AuthenticateRequest $request)
     {
-        $form_data = $request->except(['_token']);
 
-        if (!Auth::attempt($form_data)) {
+        if (!($this->authRepository->isUserAuthenticated($request))) {
             return back()->withErrors(['email' => 'invalid Credentials'])->onlyInput('email');
         }
 

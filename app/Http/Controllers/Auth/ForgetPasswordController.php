@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Password\ForgetPasswordRequest;
+use App\Http\Requests\Password\ResetPasswordRequest;
+use App\Repositories\Auth\Interfaces\ForgetPasswordInterface;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Events\PasswordReset;
 
 class ForgetPasswordController extends Controller
 {
+
+    public function __construct(private ForgetPasswordInterface $forgetPasswordRepository)
+    {
+        $this->forgetPasswordRepository = $forgetPasswordRepository;
+    }
+
     public function start_forgetPassword()
     {
         return view('auth.forget_password');
     }
 
-    public function forgetPassword(Request $request)
+    public function forgetPassword(ForgetPasswordRequest $request)
     {
-        $request->validate(['email' => 'required|email']);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
-
+        $status = $this->forgetPasswordRepository->sendEmailVerify($request);
         return $status === Password::RESET_LINK_SENT
             ? back()->with(['message' => __($status)])
             : back()->withErrors(['email' => __($status)]);
@@ -35,25 +35,10 @@ class ForgetPasswordController extends Controller
         return view('auth.password_reset', ['token' => $token]);
     }
 
-    public function password_update(Request $request)
+    public function password_update(ResetPasswordRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed', 'min:6'],
-        ]);
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
-
-                event(new PasswordReset($user));
-            }
-        );
+        $status = $this->forgetPasswordRepository->resetPassword($request);
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('message', __($status))

@@ -69,12 +69,7 @@ class JobController extends Controller
 
     public function manage($id)
     {
-        $user = User::find($id);
 
-        if ($user == auth()->user()) {
-            $listings = $user->listings;
-        }
-
-        return view('listings.manage', ['listings' => $listings]);
+        return view('listings.manage', ['listings' => $this->listingRepository->manageJobs($id)]);
     }
 }

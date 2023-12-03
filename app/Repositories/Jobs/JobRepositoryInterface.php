@@ -13,4 +13,6 @@ interface JobRepositoryInterface extends BaseRepositoryInterface
     public function updateJob(JobRequest $request, Job $listing);
 
     public function destroyJob(Job $listing);
+
+    public function manageJobs($id);
 }

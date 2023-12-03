@@ -4,6 +4,7 @@ namespace App\Repositories\Jobs;
 
 use App\Http\Requests\Job\JobRequest;
 use App\Models\Job;
+use App\Models\User;
 use App\Repositories\BaseRepository;
 
 
@@ -43,5 +44,14 @@ class JobRepository extends BaseRepository implements JobRepositoryInterface
         }
 
         return $this->destroy($listing);
+    }
+
+    public function manageJobs($id)
+    {
+        $user = User::find($id);
+
+        if ($user == auth()->user()) {
+            return  $user->listings;
+        }
     }
 }
