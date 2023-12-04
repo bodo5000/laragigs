@@ -20,9 +20,8 @@ class GoogleAuthRepository extends BaseRepository implements GoogleAuthInterface
         return User::where('email', '=', $google_user->getEmail())->first();
     }
 
-    public function createGoogleUser()
+    public function createGoogleUser($google_user)
     {
-        $google_user = $this->getGoogleUser();
 
         return User::create([
             'name' => $google_user->getName(),
@@ -39,7 +38,7 @@ class GoogleAuthRepository extends BaseRepository implements GoogleAuthInterface
 
         if (!$user) {
 
-            Auth::login($this->createGoogleUser());
+            Auth::login($this->createGoogleUser($google_user));
             return true;
         }
 

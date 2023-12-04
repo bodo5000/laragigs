@@ -10,7 +10,7 @@ interface GoogleAuthInterface extends BaseRepositoryInterface
 
     public function isGoogleUserExists($google_user);
 
-    public function createGoogleUser();
+    public function createGoogleUser($google_user);
 
     public function GoogleAuth();
 }
